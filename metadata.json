@@ -1,0 +1,5 @@
+{
+  "name": "GsPH Calculator",
+  "description": "Industrial production efficiency calculator for Gross Strokes Per Hour (GsPH) based on shift time, actual strokes, and non-production downtime.",
+  "requestFramePermissions": []
+}
