@@ -11,16 +11,18 @@ import {
   Calculator, 
   RefreshCw,
   Timer,
-  ChevronRight
+  ChevronRight,
+  Trash2
 } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export default function App() {
   // Simple Inputs
-  const [startTime, setStartTime] = useState('08:00');
-  const [endTime, setEndTime] = useState('16:30');
+  const [startTime, setStartTime] = useState('07:00');
+  const [endTime, setEndTime] = useState('17:45');
   const [totalA, setTotalA] = useState<number | ''>('');
   const [downtimeC, setDowntimeC] = useState<number | ''>('');
+  const [scrapD, setScrapD] = useState<number | ''>('');
 
   // Calculations
   const totalMinutesB = useMemo(() => {
@@ -39,9 +41,15 @@ export default function App() {
     return (Number(totalA) / netTime) * 60;
   }, [totalA, netTime]);
 
+  const scrapPercentage = useMemo(() => {
+    if (!totalA || !scrapD) return 0;
+    return (Number(scrapD) / Number(totalA)) * 100;
+  }, [totalA, scrapD]);
+
   const reset = () => {
     setTotalA('');
     setDowntimeC('');
+    setScrapD('');
   };
 
   return (
@@ -141,20 +149,56 @@ export default function App() {
             </div>
           </div>
 
+          {/* Step 4: Scrap (D) */}
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 rounded-2xl bg-red-500 flex items-center justify-center text-white font-black text-2xl shadow-lg shadow-red-200">D</div>
+              <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tight">Scrap Count</h2>
+            </div>
+            <div className="bg-white rounded-[32px] p-6 border-4 border-slate-100 shadow-sm focus-within:border-red-500 transition-all relative">
+              <label className="text-xs font-black text-red-600 uppercase tracking-widest mb-3 flex items-center gap-2">
+                <Trash2 className="w-4 h-4" /> Enter Scrap
+              </label>
+              <div className="flex items-center gap-4">
+                <input 
+                  type="number" 
+                  inputMode="numeric"
+                  placeholder="0"
+                  value={scrapD}
+                  onChange={(e) => setScrapD(e.target.value === '' ? '' : Number(e.target.value))}
+                  className="w-full bg-transparent text-6xl font-black text-red-700 placeholder:text-red-100 outline-none"
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Final Result */}
           <motion.div 
             animate={{ 
               scale: gsph > 0 ? [1, 1.05, 1] : 1,
               backgroundColor: gsph > 0 ? '#0F172A' : '#F8FAFC'
             }}
-            className="p-12 rounded-[48px] text-center shadow-2xl border-4 border-white transition-all"
+            className="p-10 rounded-[48px] text-center shadow-2xl border-4 border-white transition-all space-y-8"
           >
-            <div className={`text-xs font-black uppercase tracking-[0.5em] mb-6 ${gsph > 0 ? 'text-emerald-400' : 'text-slate-400'}`}>
-              Calculated GsPH
+            <div>
+              <div className={`text-xs font-black uppercase tracking-[0.5em] mb-4 ${gsph > 0 ? 'text-emerald-400' : 'text-slate-400'}`}>
+                Calculated GsPH
+              </div>
+              <div className={`text-8xl font-black tracking-tighter leading-none ${gsph > 0 ? 'text-white' : 'text-slate-200'}`}>
+                {gsph > 0 ? Math.round(gsph).toLocaleString() : '0'}
+              </div>
             </div>
-            <div className={`text-9xl font-black tracking-tighter leading-none ${gsph > 0 ? 'text-white' : 'text-slate-200'}`}>
-              {gsph > 0 ? Math.round(gsph).toLocaleString() : '0'}
-            </div>
+
+            {scrapPercentage > 0 && (
+              <div className="pt-8 border-t border-slate-800/50">
+                <div className="text-xs font-black uppercase tracking-[0.5em] mb-4 text-red-400">
+                  Scrap Percentage
+                </div>
+                <div className="text-6xl font-black tracking-tighter leading-none text-white">
+                  {scrapPercentage.toFixed(1)}%
+                </div>
+              </div>
+            )}
           </motion.div>
 
           {/* Reset */}
@@ -182,6 +226,11 @@ export default function App() {
           <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest">
             <div className="w-5 h-5 rounded bg-slate-900 text-white flex items-center justify-center">C</div>
             <span>Break</span>
+          </div>
+          <ChevronRight className="w-3 h-3" />
+          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest">
+            <div className="w-5 h-5 rounded bg-slate-900 text-white flex items-center justify-center">D</div>
+            <span>Scrap</span>
           </div>
         </div>
       </div>
