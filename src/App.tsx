@@ -41,7 +41,7 @@ export default function App() {
     return (Number(totalA) / netTime) * 60;
   }, [totalA, netTime]);
 
-  const scrapPercentage = useMemo(() => {
+  const scrapValue = useMemo(() => {
     if (!totalA || !scrapD) return 0;
     return (Number(scrapD) / Number(totalA)) * 100;
   }, [totalA, scrapD]);
@@ -189,13 +189,13 @@ export default function App() {
               </div>
             </div>
 
-            {scrapPercentage > 0 && (
+            {scrapValue > 0 && (
               <div className="pt-8 border-t border-slate-800/50">
                 <div className="text-xs font-black uppercase tracking-[0.5em] mb-4 text-red-400">
-                  Scrap Percentage
+                  Scrap
                 </div>
                 <div className="text-6xl font-black tracking-tighter leading-none text-white">
-                  {scrapPercentage.toFixed(1)}%
+                  {scrapValue.toFixed(4)}
                 </div>
               </div>
             )}
